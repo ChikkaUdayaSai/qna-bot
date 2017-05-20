@@ -21,9 +21,7 @@ public class QuestionsVectorizerTests {
     @Before
     public void setup() {
         inputFile = new File("src/test/data/questions.txt");
-        vectorizer = new QuestionsVectorizer();
-
-        vectorizer.fit(inputFile);
+        vectorizer = QuestionVectorizerFactory.create(inputFile);
     }
 
     @Test

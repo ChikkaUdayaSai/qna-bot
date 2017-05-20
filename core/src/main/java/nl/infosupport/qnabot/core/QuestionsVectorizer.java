@@ -1,10 +1,7 @@
 package nl.infosupport.qnabot.core;
 
 import org.deeplearning4j.bagofwords.vectorizer.BagOfWordsVectorizer;
-import org.deeplearning4j.text.sentenceiterator.FileSentenceIterator;
-import org.deeplearning4j.text.tokenization.tokenizer.preprocessor.CommonPreprocessor;
-import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFactory;
-import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
+import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 
@@ -18,30 +15,13 @@ import java.util.List;
  * Utility to convert sentences into vectors using a bag of words algorithm
  */
 public class QuestionsVectorizer {
-    private BagOfWordsVectorizer vectorizer;
+    private final BagOfWordsVectorizer vectorizer;
 
     /**
      * Initializes a new instance {@link QuestionsVectorizer}
      */
-    public QuestionsVectorizer() {
-
-    }
-
-    /**
-     * Fits the vectorizer to the specified input file
-     *
-     * @param trainingDataFile The file containing samples to fit the vectorizer on
-     */
-    public void fit(File trainingDataFile) {
-        TokenizerFactory tokenizerFactory = new DefaultTokenizerFactory();
-        tokenizerFactory.setTokenPreProcessor(new CommonPreprocessor());
-
-        vectorizer = new BagOfWordsVectorizer.Builder()
-                .setIterator(new FileSentenceIterator(trainingDataFile))
-                .setTokenizerFactory(tokenizerFactory)
-                .build();
-
-        vectorizer.fit();
+    public QuestionsVectorizer(BagOfWordsVectorizer vectorizer) {
+        this.vectorizer = vectorizer;
     }
 
     /**
@@ -82,5 +62,14 @@ public class QuestionsVectorizer {
      */
     public int getVocabularySize() {
         return vectorizer.getVocabCache().numWords();
+    }
+
+    /**
+     * Saves the vocabulary cache for the vectorizer to disk
+     * @param outputFile     Output file to save the vocabulary to
+     * @throws IOException  Gets thrown when the file could not be written
+     */
+    public void save(File outputFile) throws IOException {
+        WordVectorSerializer.writeVocabCache(vectorizer.getVocabCache(), outputFile);
     }
 }

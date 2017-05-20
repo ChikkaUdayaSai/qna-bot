@@ -12,7 +12,14 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Main class for the application
+ */
 public class QnaBotTrainingApplication {
+    /**
+     * Entrypoint for the application
+     * @param args Commandline arguments
+     */
     public static void main(String... args) {
         Logger logger = LoggerFactory.getLogger(QnaBotTrainingApplication.class);
 
@@ -23,10 +30,10 @@ public class QnaBotTrainingApplication {
 
         server.attach(statsStorage);
 
-        QuestionsVectorizer questionsVectorizer = new QuestionsVectorizer();
-        AnswersVectorizer answersVectorizer = new AnswersVectorizer();
+        QuestionsVectorizer questionsVectorizer = QuestionVectorizerFactory.create(
+                new File("data/questions.txt"));
 
-        questionsVectorizer.fit(new File("data/questions.txt"));
+        AnswersVectorizer answersVectorizer = new AnswersVectorizer();
 
         try {
             INDArray labels = answersVectorizer.transform(new File("data/answers.txt"));
@@ -39,6 +46,7 @@ public class QnaBotTrainingApplication {
             classifier.fit(features, labels);
 
             classifier.save(new File("model/classifier.bin"));
+            questionsVectorizer.save(new File("model/vocabulary.bin"));
         } catch (IOException ex) {
             logger.error("Failed to read training data", ex);
         }

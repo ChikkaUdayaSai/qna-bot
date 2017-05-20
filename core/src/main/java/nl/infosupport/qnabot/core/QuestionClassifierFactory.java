@@ -33,7 +33,7 @@ public class QuestionClassifierFactory {
      * @param numLabels      The output size for the neural network
      * @return Returns the classifier for the user questions
      */
-    public QuestionClassifier create(int vocabularySize, int numLabels, TrainingSettings trainingSettings,
+    public static QuestionClassifier create(int vocabularySize, int numLabels, TrainingSettings trainingSettings,
                                      IterationListener... iterationListeners) {
         MultiLayerConfiguration configuration = new NeuralNetConfiguration.Builder()
                 .seed(42)
@@ -61,7 +61,7 @@ public class QuestionClassifierFactory {
      * @return Returns the restored question classifier
      * @throws IOException Gets thrown when the input file could not be read
      */
-    public QuestionClassifier restore(File inputFile, IterationListener... iterationListeners) throws IOException {
+    public static QuestionClassifier restore(File inputFile, IterationListener... iterationListeners) throws IOException {
         MultiLayerNetwork network = ModelSerializer.restoreMultiLayerNetwork(inputFile);
         network.setListeners(iterationListeners);
 
