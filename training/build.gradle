@@ -1,0 +1,23 @@
+group 'nl.infosupport.qnabot'
+version '0.1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+
+    compile group: 'org.deeplearning4j', name: 'deeplearning4j-core', version: '0.8.0'
+    compile group: 'org.deeplearning4j', name: 'deeplearning4j-ui_2.10', version: '0.8.0'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+
+    compile project(':core')
+}
+
+mainClassName = 'nl.infosupport.qnabot.training.QnaBotTrainingApplication'

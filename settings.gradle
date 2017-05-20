@@ -1,0 +1,5 @@
+rootProject.name = 'qnabot'
+
+include 'training'
+include 'core'
+
