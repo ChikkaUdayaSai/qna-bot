@@ -4,4 +4,4 @@ Q&A Bot
 
 This repository contains the code for a Q&A bot application.
 You can use this to build your own chatbot that is capable of 
-answering predefined questions.
+answering questions that have predefined answers.
