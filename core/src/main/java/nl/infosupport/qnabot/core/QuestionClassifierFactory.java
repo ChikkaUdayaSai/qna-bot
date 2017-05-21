@@ -1,5 +1,6 @@
 package nl.infosupport.qnabot.core;
 
+import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
@@ -42,8 +43,7 @@ public class QuestionClassifierFactory {
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .list()
                 .layer(0, relu(vocabularySize, 1024))
-                .layer(1, relu(1024, 1024))
-                .layer(2, softmax(numLabels))
+                .layer(1, softmax(1024, numLabels))
                 .backprop(true).pretrain(false)
                 .build();
 
@@ -51,7 +51,9 @@ public class QuestionClassifierFactory {
         network.setListeners(iterationListeners);
         network.init();
 
-        return new QuestionClassifier(network);
+        Evaluation evaluation = new Evaluation(numLabels);
+
+        return new QuestionClassifier(network, evaluation);
     }
 
     /**
@@ -65,7 +67,9 @@ public class QuestionClassifierFactory {
         MultiLayerNetwork network = ModelSerializer.restoreMultiLayerNetwork(inputFile);
         network.setListeners(iterationListeners);
 
-        return new QuestionClassifier(network);
+        Evaluation evaluation = new Evaluation(network.numLabels());
+
+        return new QuestionClassifier(network, evaluation);
     }
 
     /**
@@ -88,9 +92,9 @@ public class QuestionClassifierFactory {
      * @param outputSize Number of output neurons
      * @return Returns the output layer
      */
-    private static OutputLayer softmax(int outputSize) {
+    private static OutputLayer softmax(int inputSize, int outputSize) {
         return new OutputLayer.Builder(LossFunctions.LossFunction.MCXENT)
-                .nOut(outputSize)
+                .nIn(inputSize).nOut(outputSize)
                 .activation(Activation.SOFTMAX)
                 .build();
     }

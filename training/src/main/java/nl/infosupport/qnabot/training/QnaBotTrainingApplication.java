@@ -44,6 +44,7 @@ public class QnaBotTrainingApplication {
                     new StatsListener(statsStorage));
 
             classifier.fit(features, labels);
+            classifier.evaluate(features, labels);
 
             classifier.save(new File("model/classifier.bin"));
             questionsVectorizer.save(new File("model/vocabulary.bin"));
